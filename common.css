@@ -13,17 +13,17 @@ BODY {
 
 TABLE  {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 	
 TD {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 	
 TH {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: bold;
 	}
 	
@@ -34,17 +34,17 @@ TH {
 	
 LI {
 	font-family: "Courier eral Purpose Geospatial Compreseral Purpose Geospatial CompresNew", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 	
 UL {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 	
 OL {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 
 .headline.destinationHead {
@@ -67,7 +67,7 @@ OL {
 /*---------------------------------------------------------------------------*/
 P {
 	font-family: "Courier New", Courier, mono;
-	font-size: 11px;
+	font-size: 13px;
 	}
 	
 H1 {
@@ -90,8 +90,8 @@ TEXTAREA {
 	font-family: "Courier New", Courier, mono;
 	font-size: 11px;
 	}
-a:active {  font-family: "Courier New", Courier, mono; font-size: 11px; color: #000000; text-decoration: none}
-a:visited {  font-family: "Courier New", Courier, mono; font-size: 11px; color: #CC0000; text-decoration: none}
-a:link {  font-family: "Courier New", Courier, mono; font-size: 11px; font-style: normal; text-decoration: none; color: #990000}
-a:hover {  font-family: "Courier New", Courier, mono; font-size: 11px; color: #000099; text-decoration: none}
+a:active {  font-family: "Courier New", Courier, mono; font-size: 13px; color: #000000; text-decoration: none}
+a:visited {  font-family: "Courier New", Courier, mono; font-size: 13px; color: #CC0000; text-decoration: none}
+a:link {  font-family: "Courier New", Courier, mono; font-size: 13px; font-style: normal; text-decoration: none; color: #990000}
+a:hover {  font-family: "Courier New", Courier, mono; font-size: 13px; color: #000099; text-decoration: none}
 
