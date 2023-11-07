@@ -53,6 +53,15 @@ OL {
 	color: CC99FF;
 	}
 
+.jack{
+  font-size: 18px !important;
+    display: block;
+  padding-bottom: 10px; /* Adjust the padding value as needed */
+  text-decoration: none !important; /* Remove underline */
+  text-align: center !important;
+  color: inherit !important; /* Inherit text color from parent */
+}
+
 
 /*---------------------------------------------------------------------------*/	
 /* Begin Formating Definitions for HTML elements
