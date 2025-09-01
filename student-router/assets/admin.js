@@ -1,4 +1,9 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbyBH8ejj7_yxdDj6a0ktKe6ewrj1Afi2X5pYiRQM5EUJtBG03f9ZeD-wGejeOAE-jGNjw/exec';
+const API_URL = 'https://billowing-tree-412a.jackiecarson77.workers.dev';
+
+function getApiBase() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('api') || API_URL;
+}
 
 let schedule = {};
 let rosterData = [];
@@ -22,9 +27,11 @@ async function loadData() {
     showLoading();
     
     try {
+        const countsEndpoint = `${getApiBase()}?action=counts`;
+        const rosterEndpoint = `${getApiBase()}?action=roster`;
         const [countsRes, rosterRes] = await Promise.all([
-            fetch(`${API_URL}?action=counts`),
-            fetch(`${API_URL}?action=roster`)
+            fetch(countsEndpoint),
+            fetch(rosterEndpoint)
         ]);
         
         countsData = await countsRes.json();
@@ -49,11 +56,12 @@ function renderCapacityGroup(containerId, sections, counts) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
     
-    const categoryName = containerId.split('-')[0];
+    const rawCategory = containerId.split('-')[0];
+    const categoryName = rawCategory === 'rec' ? 'recitations' : rawCategory;
     
     for (const [key, section] of Object.entries(sections)) {
         const count = counts[key] || 0;
-        const capacity = schedule.capacities[categoryName][key];
+        const capacity = (((schedule.capacities || {})[categoryName] || {})[key]) || 0;
         const percentage = (count / capacity) * 100;
         
         const bar = document.createElement('div');
@@ -200,11 +208,11 @@ function exportCSV() {
 }
 
 function showLoading() {
-    document.getElementById('loading').classList.remove('hidden');
+    // disabled
 }
 
 function hideLoading() {
-    document.getElementById('loading').classList.add('hidden');
+    // disabled
 }
 
 document.addEventListener('DOMContentLoaded', init);

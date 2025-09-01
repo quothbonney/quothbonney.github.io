@@ -1,4 +1,10 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbyBH8ejj7_yxdDj6a0ktKe6ewrj1Afi2X5pYiRQM5EUJtBG03f9ZeD-wGejeOAE-jGNjw/exec';
+const API_URL = 'https://billowing-tree-412a.jackiecarson77.workers.dev';
+const ASSET_VERSION = 'v2';
+
+function getApiBase() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('api') || API_URL;
+}
 
 let schedule = {};
 let copy = {};
@@ -6,8 +12,8 @@ let copy = {};
 async function init() {
     try {
         const [scheduleRes, copyRes] = await Promise.all([
-            fetch('assets/schedule.json'),
-            fetch('assets/copy.json')
+            fetch(`assets/schedule.json?${ASSET_VERSION}`),
+            fetch(`assets/copy.json?${ASSET_VERSION}`)
         ]);
         
         schedule = await scheduleRes.json();
@@ -133,8 +139,10 @@ async function handleSubmit(event) {
         }
     };
     
-    // Check if running on localhost - use mock data for development
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // Check if running on localhost - use mock data for development unless ?live=1 is set
+    const isLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const forceLive = new URLSearchParams(window.location.search).has('live');
+    if (isLocalhost && !forceLive) {
         // Simulate the backend response for local development
         setTimeout(() => {
             // Mock assignment based on availability
@@ -162,17 +170,58 @@ async function handleSubmit(event) {
     }
     
     try {
-        const response = await fetch(`${API_URL}?action=assign`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-            body: JSON.stringify({
-                ...payload
-            })
-        });
+        const useJsonp = new URLSearchParams(window.location.search).has('jsonp');
+        let result;
         
-        const result = await response.json();
+        if (useJsonp) {
+            // JSONP: construct a GET URL with query params + callback
+            const cbName = `jsonp_cb_${Date.now()}`;
+            result = await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                const params = new URLSearchParams({
+                    action: 'assign',
+                    id: payload.id,
+                    name: payload.name,
+                    email: payload.email,
+                    class: payload.availability.class.join(','),
+                    recitations: payload.availability.recitations.join(','),
+                    ta: payload.availability.ta.join(','),
+                    callback: cbName
+                });
+                window[cbName] = (data) => {
+                    delete window[cbName];
+                    document.body.removeChild(script);
+                    resolve(data);
+                };
+                script.onerror = () => {
+                    delete window[cbName];
+                    document.body.removeChild(script);
+                    reject(new Error('JSONP request failed'));
+                };
+                script.src = `${getApiBase()}?${params.toString()}`;
+                document.body.appendChild(script);
+            });
+        } else {
+            const endpoint = `${getApiBase()}?action=assign`;
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify({
+                    ...payload
+                })
+            });
+            
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                const raw = await response.text();
+                console.error('Non-JSON response from backend:', raw);
+                throw new Error('Invalid response from backend');
+            } else {
+                result = await response.json();
+            }
+        }
         
         if (result.ok) {
             showResult(result.assignment);

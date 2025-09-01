@@ -49,6 +49,35 @@ function doGet(e) {
       case 'roster':
         result = getRoster();
         break;
+      case 'assign': {
+        // Support JSONP to avoid CORS: expects &callback=fn
+        // Parse parameters to match the POST payload structure
+        const id = (e.parameter.id || '').toString().trim();
+        const name = (e.parameter.name || '').toString().trim();
+        const email = (e.parameter.email || '').toString().trim();
+        const classList = (e.parameter.class || '').toString().split(',').map(s => s.trim()).filter(Boolean);
+        const recitationsList = (e.parameter.recitations || '').toString().split(',').map(s => s.trim()).filter(Boolean);
+        const taList = (e.parameter.ta || '').toString().split(',').map(s => s.trim()).filter(Boolean);
+
+        const data = {
+          id: id,
+          name: name,
+          email: email,
+          availability: {
+            class: classList,
+            recitations: recitationsList,
+            ta: taList
+          }
+        };
+
+        result = assignStudent(data);
+
+        const callback = e.parameter.callback;
+        if (callback) {
+          return createJsonpResponse(callback, result);
+        }
+        break;
+      }
       default:
         result = { error: 'Invalid action' };
     }
@@ -86,23 +115,17 @@ function doPost(e) {
   }
 }
 
-// Handle CORS preflight requests
-function doOptions(e) {
-  return ContentService
-    .createTextOutput('')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-}
-
 function createResponse(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function createJsonpResponse(callback, data) {
+  const payload = `${callback}(${JSON.stringify(data)})`;
+  return ContentService
+    .createTextOutput(payload)
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
 function assignStudent(data) {

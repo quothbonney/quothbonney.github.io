@@ -1,6 +1,6 @@
 {
-  "title": "Section Registration",
-  "subtitle": "Mark all times you are available - we'll assign you optimal sections",
+  "title": "CC.110 Section Sorter",
+  "subtitle": "Mark all the times you are available and you will be matched to the optimal section (via an extremely over engineered stateful sorting algorithm)",
   "form": {
     "kerb": "Kerberos",
     "name": "Full Name",
