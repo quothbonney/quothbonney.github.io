@@ -1,0 +1,30 @@
+{
+  "title": "Section Registration",
+  "subtitle": "Mark all times you are available - we'll assign you optimal sections",
+  "form": {
+    "kerb": "Kerberos",
+    "name": "Full Name",
+    "classLabel": "Class Availability (check all times you can attend)",
+    "recitationLabel": "Recitation Availability (check all times you can attend)",
+    "taLabel": "TA Section Availability (check all times you can attend)",
+    "dayA": "Wednesday",
+    "dayB": "Thursday",
+    "submit": "Submit Availability",
+    "submitting": "Assigning sections..."
+  },
+  "messages": {
+    "success": "Sections assigned based on your availability:",
+    "error": "Assignment failed. Please try again.",
+    "validationClass": "Please select at least one class time",
+    "validationRecA": "Please select at least one Wednesday recitation",
+    "validationRecB": "Please select at least one Thursday recitation",
+    "validationTA": "Please select at least one TA section",
+    "noFeasible": "No sections available that match your availability. Please expand your availability or contact course staff."
+  },
+  "admin": {
+    "title": "Course Section Dashboard",
+    "roster": "Student Roster",
+    "capacities": "Section Capacities",
+    "export": "Export CSV"
+  }
+}

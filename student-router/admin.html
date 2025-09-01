@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Section Dashboard</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="container admin-container">
+        <header>
+            <h1>Course Section Dashboard</h1>
+            <div class="admin-actions">
+                <button id="refresh-btn">Refresh Data</button>
+                <button id="export-btn">Export CSV</button>
+            </div>
+        </header>
+
+        <section class="capacities-section">
+            <h2>Section Capacities</h2>
+            <div class="capacity-grid">
+                <div class="capacity-group">
+                    <h3>Class Sections</h3>
+                    <div id="class-capacities" class="capacity-bars"></div>
+                </div>
+                <div class="capacity-group">
+                    <h3>Recitations</h3>
+                    <div id="rec-capacities" class="capacity-bars"></div>
+                </div>
+                <div class="capacity-group">
+                    <h3>TA Sections</h3>
+                    <div id="ta-capacities" class="capacity-bars"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="roster-section">
+            <h2>Student Roster</h2>
+            <div class="roster-controls">
+                <input type="text" id="search-input" placeholder="Search by name, ID, or email...">
+                <select id="filter-section">
+                    <option value="">All Sections</option>
+                    <optgroup label="Class">
+                        <option value="class:C1">Class 1</option>
+                        <option value="class:C2">Class 2</option>
+                    </optgroup>
+                    <optgroup label="Recitations">
+                        <option value="rec:R1">Rec A1</option>
+                        <option value="rec:R2">Rec A2</option>
+                        <option value="rec:R3">Rec B1</option>
+                        <option value="rec:R4">Rec B2</option>
+                    </optgroup>
+                    <optgroup label="TA Sections">
+                        <option value="ta:T1">TA 1</option>
+                        <option value="ta:T2">TA 2</option>
+                        <option value="ta:T3">TA 3</option>
+                        <option value="ta:T4">TA 4</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="table-wrapper">
+                <table id="roster-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="timestamp">Timestamp</th>
+                            <th data-sort="id">Student ID</th>
+                            <th data-sort="name">Name</th>
+                            <th data-sort="email">Email</th>
+                            <th data-sort="class">Class</th>
+                            <th data-sort="rec_a">Rec A</th>
+                            <th data-sort="rec_b">Rec B</th>
+                            <th data-sort="ta">TA</th>
+                            <th>Locked</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-body">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div id="loading" class="loading-overlay hidden">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <script src="assets/admin.js"></script>
+</body>
+</html>

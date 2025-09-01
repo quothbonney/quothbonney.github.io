@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Section Registration</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="page-title">Course Section Registration</h1>
+            <p id="page-subtitle">Select your availability for all required components</p>
+        </header>
+
+        <form id="registration-form">
+            <div class="form-section">
+                <label for="student-kerb">Kerberos (e.g., jdoe)</label>
+                <input type="text" id="student-kerb" pattern="[a-z0-9]+" required>
+            </div>
+
+            <div class="form-section">
+                <label for="student-name">Full Name</label>
+                <input type="text" id="student-name" required>
+            </div>
+
+            <div class="form-section">
+                <h3>Class Availability</h3>
+                <p style="font-size: 12px; margin-bottom: 10px;">Check all times you can attend</p>
+                <div id="class-options" class="checkbox-group"></div>
+            </div>
+
+            <div class="form-section">
+                <h3>Recitation Availability</h3>
+                <p style="font-size: 12px; margin-bottom: 10px;">Check all times you can attend</p>
+                <div class="recitation-group">
+                    <h4>Wednesday</h4>
+                    <div id="rec-a-options" class="checkbox-group"></div>
+                </div>
+                <div class="recitation-group">
+                    <h4>Thursday</h4>
+                    <div id="rec-b-options" class="checkbox-group"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>TA Section Availability</h3>
+                <p style="font-size: 12px; margin-bottom: 10px;">Check all times you can attend</p>
+                <div id="ta-options" class="checkbox-group"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" id="submit-btn">Submit Registration</button>
+            </div>
+        </form>
+
+        <div id="result" class="result-panel hidden">
+            <h3 id="result-title"></h3>
+            <div id="result-content"></div>
+        </div>
+
+        <div id="error" class="error-panel hidden">
+            <p id="error-message"></p>
+        </div>
+    </div>
+
+    <script src="assets/app.js"></script>
+</body>
+</html>

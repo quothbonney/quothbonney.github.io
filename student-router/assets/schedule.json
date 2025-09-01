@@ -1,0 +1,24 @@
+{
+  "class": {
+    "sparta": {"label": "Sparta", "time": "Tuesdays 9:45-10:30 AM"},
+    "athens": {"label": "Athens", "time": "Tuesdays 3:15-4:30 PM"}
+  },
+  "recitations": {
+    "corinth": {"label": "Corinth", "day": "A", "time": "Wed 12:00-1:00 PM"},
+    "argos": {"label": "Argos", "day": "A", "time": "Wed 4:00-5:00 PM"},
+    "thebes": {"label": "Thebes", "day": "B", "time": "Thu 3:00-4:00 PM"},
+    "crete": {"label": "Crete", "day": "B", "time": "Thu 4:00-5:00 PM"}
+  },
+  "ta": {
+    "woods": {"label": "Woods", "time": "Thu 3:00-4:00 PM"},
+    "johnnie": {"label": "Johnnie", "time": "Thu 10:00-11:00 AM"},
+    "siddhu": {"label": "Siddhu", "time": "Thu 11:00 AM-12:00 PM"},
+    "mariam": {"label": "Mariam", "time": "Fri 9:30-10:30 AM"},
+    "jack": {"label": "Jack", "time": "Fri 3:00-4:00 PM"}
+  },
+  "capacities": {
+    "class": {"sparta": 40, "athens": 40},
+    "recitations": {"corinth": 40, "argos": 40, "thebes": 40, "crete": 40},
+    "ta": {"woods": 16, "johnnie": 16, "siddhu": 16, "mariam": 16, "jack": 16}
+  }
+}
