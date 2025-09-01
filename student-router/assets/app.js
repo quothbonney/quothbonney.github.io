@@ -133,26 +133,41 @@ async function handleSubmit(event) {
         }
     };
     
-    // Check if running on localhost
+    // Check if running on localhost - use mock data for development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        showError('⚠️ Cannot submit from localhost due to CORS restrictions.<br><br>' +
-                  'Please either:<br>' +
-                  '1. Deploy to GitHub Pages (push to main branch)<br>' +
-                  '2. Open index.html directly as a file:// URL<br>' +
-                  '3. Use a CORS proxy for development');
-        submitBtn.disabled = false;
-        submitBtn.textContent = copy.form.submit;
+        // Simulate the backend response for local development
+        setTimeout(() => {
+            // Mock assignment based on availability
+            const mockAssignment = {
+                class: payload.availability.class[0] || 'sparta',
+                rec_a: payload.availability.recitations.find(r => schedule.recitations[r]?.day === 'A') || 'argos',
+                rec_b: payload.availability.recitations.find(r => schedule.recitations[r]?.day === 'B') || 'thebes',
+                ta: payload.availability.ta[0] || 'woods'
+            };
+            
+            console.log('Mock assignment (localhost only):', mockAssignment);
+            showResult(mockAssignment);
+            
+            // Add development notice
+            const resultPanel = document.getElementById('result');
+            const devNotice = document.createElement('div');
+            devNotice.style.cssText = 'margin-top: 1rem; padding: 0.5rem; background: #fffbeb; border: 1px solid #fbbf24; border-radius: 4px; color: #92400e;';
+            devNotice.innerHTML = '⚠️ Development Mode: This is a mock response. Deploy to GitHub Pages for real assignments.';
+            resultPanel.appendChild(devNotice);
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = copy.form.submit;
+        }, 500); // Simulate network delay
         return;
     }
     
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}?action=assign`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain',
             },
             body: JSON.stringify({
-                action: 'assign',
                 ...payload
             })
         });

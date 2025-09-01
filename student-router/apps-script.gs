@@ -61,7 +61,9 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    const data = JSON.parse(e.postData.contents || '{}');
+    // Prefer action from query, but also allow action in body for flexibility
+    const action = (e.parameter && e.parameter.action) || data.action;
     
     // Optional bearer token check
     if (BEARER_TOKEN && e.parameter.token !== BEARER_TOKEN) {
@@ -73,7 +75,7 @@ function doPost(e) {
       return createResponse({ ok: false, message: 'ID not in whitelist' });
     }
     
-    if (e.parameter.action === 'assign') {
+    if (action === 'assign') {
       const result = assignStudent(data);
       return createResponse(result);
     }
@@ -84,11 +86,23 @@ function doPost(e) {
   }
 }
 
+// Handle CORS preflight requests
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+}
+
 function createResponse(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*');
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 function assignStudent(data) {
