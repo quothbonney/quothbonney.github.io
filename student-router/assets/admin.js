@@ -131,7 +131,7 @@ function renderRoster() {
     });
     
     tbody.innerHTML = filteredData.map(row => `
-        <tr>
+        <tr data-student-id="${row.id}">
             <td>${formatDate(row.timestamp)}</td>
             <td>${row.id}</td>
             <td>${row.name}</td>
@@ -142,8 +142,14 @@ function renderRoster() {
             <td>${row.ta || '-'}</td>
             <td>${row.locked ? '🔒' : ''}</td>
             <td>${row.notes || ''}</td>
+            <td style="text-align: center;"><button class="delete-btn" data-id="${row.id}" style="background: none; color: #ef4444; border: none; padding: 2px 6px; cursor: pointer; font-size: 16px;">×</button></td>
         </tr>
     `).join('');
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', handleDelete);
+    });
 }
 
 function formatDate(timestamp) {
@@ -213,6 +219,44 @@ function showLoading() {
 
 function hideLoading() {
     // disabled
+}
+
+async function handleDelete(event) {
+    const studentId = event.target.dataset.id;
+    
+    if (!confirm(`Are you sure you want to delete student ${studentId}?`)) {
+        return;
+    }
+    
+    try {
+        const deleteEndpoint = `${getApiBase()}?action=delete`;
+        const response = await fetch(deleteEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: studentId })
+        });
+        
+        const result = await response.json();
+        
+        if (result.ok) {
+            // Remove from local data
+            rosterData = rosterData.filter(row => row.id !== studentId);
+            // Re-render the table
+            renderRoster();
+            // Reload counts
+            const countsEndpoint = `${getApiBase()}?action=counts`;
+            const countsRes = await fetch(countsEndpoint);
+            countsData = await countsRes.json();
+            renderCapacities();
+        } else {
+            alert(`Failed to delete student: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('Failed to delete student:', error);
+        alert('Failed to delete student. Please try again.');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', init);

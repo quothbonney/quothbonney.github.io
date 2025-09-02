@@ -20,6 +20,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/*$/, '');
     const method = request.method.toUpperCase();
+    const action = url.searchParams.get('action');
 
     // CORS preflight
     if (method === 'OPTIONS') {
@@ -27,6 +28,30 @@ export default {
     }
 
     try {
+      // Handle query parameter based routing
+      if (action === 'assign' && method === 'POST') {
+        const body = await request.json();
+        const result = await handleAssign(env.KV_STUDENTS, body);
+        return cors(json(result));
+      }
+
+      if (action === 'counts' && method === 'GET') {
+        const counts = await getCounts(env.KV_STUDENTS);
+        return cors(json(counts));
+      }
+
+      if (action === 'roster' && method === 'GET') {
+        const roster = await getRoster(env.KV_STUDENTS);
+        return cors(json(roster));
+      }
+
+      if (action === 'delete' && method === 'POST') {
+        const body = await request.json();
+        const result = await handleDelete(env.KV_STUDENTS, body);
+        return cors(json(result));
+      }
+
+      // Legacy path-based routing
       if (path.endsWith('/assign') && method === 'POST') {
         const body = await request.json();
         const result = await handleAssign(env.KV_STUDENTS, body);
@@ -41,6 +66,12 @@ export default {
       if (path.endsWith('/roster') && method === 'GET') {
         const roster = await getRoster(env.KV_STUDENTS);
         return cors(json(roster));
+      }
+
+      if (path.endsWith('/delete') && method === 'POST') {
+        const body = await request.json();
+        const result = await handleDelete(env.KV_STUDENTS, body);
+        return cors(json(result));
       }
 
       return cors(json({ error: 'Not found' }, 404));
@@ -190,6 +221,29 @@ function calculateCounts(rows) {
     if (row.ta) counts.ta[row.ta] = (counts.ta[row.ta] || 0) + 1;
   }
   return counts;
+}
+
+async function listAllStudents(KV) {
+  const list = await KV.list({ prefix: 'student:' });
+  const out = [];
+  for (const key of list.keys) {
+    const row = await KV.get(key.name, { type: 'json' });
+    if (row) out.push(row);
+  }
+  return out;
+}
+
+async function handleDelete(KV, data) {
+  const studentId = (data?.id || '').toString();
+  if (!studentId) throw new Error('Missing id');
+  
+  const existing = await KV.get(`student:${studentId}`, { type: 'json' });
+  if (!existing) {
+    return { ok: false, message: 'Student not found' };
+  }
+  
+  await KV.delete(`student:${studentId}`);
+  return { ok: true, message: 'Student deleted successfully' };
 }
 
 
